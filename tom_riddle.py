@@ -13,12 +13,42 @@
 # computer says back, e.g. "I am" --> "you are"
 
 from nltk.chat.util import Chat, reflections
+import pickle
+from FuzzySearch import FuzzySearch
 
 # a table of response pairs, where each pair consists of a
 # regular expression, and a list of possible responses,
 # with group-macros labelled as %1, %2.
 
 pairs = (
+    (
+        r"Tell me about (.*)",
+        (
+            "[[KNOWLAGE_BASE]]=%1",
+            "[[KNOWLAGE_BASE]]=%1"
+        ),
+    ),
+    (
+        r"Who is (.*)",
+        (
+            "[[KNOWLAGE_BASE]]=%1",
+            "[[KNOWLAGE_BASE]]=%1"
+        ),
+    ),
+    (
+        r"what happened with (.*)",
+        (
+            "[[KNOWLAGE_BASE]]=%1",
+            "[[KNOWLAGE_BASE]]=%1"
+        ),
+    ),
+    (
+        r"what happened to (.*)",
+        (
+            "[[KNOWLAGE_BASE]]=%1",
+            "[[KNOWLAGE_BASE]]=%1"
+        ),
+    ),
     (
         r"I need (.*)",
         (
@@ -324,24 +354,65 @@ pairs = (
     ),
 )
 
-eliza_chatbot = Chat(pairs, reflections)
 
 
-def eliza_chat():
-    print("Therapist\n---------")
-    print("Talk to the program by typing in plain English, using normal upper-")
-    print('and lower-case letters and punctuation.  Enter "quit" when done.')
-    print("=" * 72)
-    print("Hello.  How are you feeling today?")
-
-    eliza_chatbot.converse()
+def main():
+    
+    with open('knowledge_base.pickle', 'rb') as handle:
+        knowlage_base = pickle.load(handle)
+    search = FuzzySearch(knowlage_base)
+    start_chat(search)
 
 
 
-def demo():
-    eliza_chat()
+
+
+def start_chat(fuzzy_knowlage_base: FuzzySearch):
+    tom_chatbot = Chat(pairs, reflections)
+    
+    while True:
+        inp = input("> ")
+        res = tom_chatbot.respond(inp)
+        # process Response
+        
+        #check for knowlage base responses
+        if res.startswith("[[KNOWLAGE_BASE]]="): 
+            res = fuzzy_knowlage_base.find(res[len("[[KNOWLAGE_BASE]]="):])
+            print("DEBUG: ", res[0], res[2])
+            if res[2] < 35: # Confidence threshhold
+                res = "You speak nonsense"
+            else: #join the sentences together
+                res = " ".join(res[1]["summary"])
+
+
+        print(res)
+
+        # check for commands
+        if inp == "quit":
+            break
+
+        
+
+
+# eliza_chatbot = Chat(pairs, reflections)
+
+
+# def eliza_chat():
+#     print("Therapist\n---------")
+#     print("Talk to the program by typing in plain English, using normal upper-")
+#     print('and lower-case letters and punctuation.  Enter "quit" when done.')
+#     print("=" * 72)
+#     print("Hello.  How are you feeling today?")
+
+#     eliza_chatbot.converse()
+
+
+
+# def demo():
+#     eliza_chat()
 
 
 
 if __name__ == "__main__":
-    demo()
+    # demo()
+    main()

@@ -16,7 +16,7 @@ visited_urls = []
 def main():
     starter_url = "https://harrypotter.fandom.com/wiki/Harry_Potter"
 
-    crawl(starter_url, 20)
+    crawl(starter_url, 3)
 
     with open("knowledge_base.json", "w") as f:
         f.write(json.dumps(knowledge_base, indent=1))
@@ -26,18 +26,18 @@ def main():
 
 def crawl(starter_url, link_limit=20):
     
-    _crawl(starter_url, 4, link_limit)
+    _crawl(starter_url, 5, link_limit)
 
     
 
 
 def _crawl(starter_url, depth, link_limit): 
+    print("URL:", starter_url)
     print("Depth: ", depth)
-    print("Visited urls", visited_urls)
+    print("Visited Urls:", len(visited_urls))
+    #print("Visited urls", visited_urls)
     # check to see if we've been her ebefore
-    if starter_url in visited_urls: 
-        print("Skipping: Visited!")
-        return
+    
 
     
     
@@ -45,10 +45,17 @@ def _crawl(starter_url, depth, link_limit):
     
     parent_url_parse = urlparse(starter_url)
     domain = parent_url_parse.netloc
+    url_key = parent_url_parse.netloc+parent_url_parse.path
+    if url_key in visited_urls: 
+        print("Skipping: Visited!")
+        return
 
-    
-
-    r = requests.get(starter_url)
+    if depth != 0: 
+        visited_urls.append(url_key)
+    try:
+        r = requests.get(starter_url)
+    except:
+        return
 
     data = r.text
     soup = BeautifulSoup(data, features="html.parser")
@@ -85,7 +92,7 @@ def _crawl(starter_url, depth, link_limit):
         summary = ""
         if paragraphs != None: 
             for p in paragraphs:
-                if p.find("aside") == None: # remove the dumb aside
+                if p.find("aside") == None: # remove the dumb aside.  Why must we do this terribleness :(
                     summary = summary + p.text
             if summary == "": #no summary
                 print("Skipping: Could not paarse Summary!")
@@ -104,7 +111,7 @@ def _crawl(starter_url, depth, link_limit):
     if depth <= 0: 
         return
     
-    visited_urls.append(parent_url_parse.netloc+parent_url_parse.path)
+    
     #find and visit child urls
     counter = 0
     
@@ -121,20 +128,26 @@ def _crawl(starter_url, depth, link_limit):
             url_parse = urlparse(href)
             cur_domain = url_parse.netloc
             
+            if url_parse.netloc+url_parse.path in visited_urls: 
+                print("Skipping: Visited!")
+                continue
+
             
 
             if cur_domain != domain: # we want to stay within our domain
                 print("Skipping: Not in our domain!")
                 continue
             
+            index = href.find("#")
+            if index != -1: 
+                href = href[:index]
+            # url, res = visit_url(href)
+            # if res == None: # tere was an error visiting the url
+            #     print("Skipping: Error visiting!")
+            #     continue
             
-            url, res = visit_url(href)
-            if res == None: # tere was an error visiting the url
-                print("Skipping: Error visiting!")
-                continue
             
-            
-            print(url)
+            #print(href)
             
             # summary_container = soup.find("div", {"id": "mw-content-text"})
             # if summary_container == None:
@@ -165,7 +178,7 @@ def _crawl(starter_url, depth, link_limit):
 
             # Recurce down the link tree
             
-            _crawl(url, depth-1, link_limit)
+            _crawl(href, depth-1, link_limit)
             
             
             
@@ -184,26 +197,26 @@ def _crawl(starter_url, depth, link_limit):
 # handles common visit tasks
 def visit_url(url: str):    
     re = None
-    try:
-        re = requests.get(url)
-    except:
-        return url, None
-    o = urlparse(url)
+    # try:
+    #     re = requests.get(url)
+    # except:
+    #     return url, None
+    # o = urlparse(url)
 
-    #check for redirects
-    if "wikipedia" in o.netloc: # wikipedia is dumb and has a special way of doing url redirects
-        soup = BeautifulSoup(re.text, features="html.parser")
+    # #check for redirects
+    # if "wikipedia" in o.netloc: # wikipedia is dumb and has a special way of doing url redirects
+    #     soup = BeautifulSoup(re.text, features="html.parser")
 
-        for link in soup.find_all("link"):
-            rel = link.get('rel')
-            if rel:
-                rel = rel[0]
-                if rel == "canonical":
-                    url = link.get('href')
-                    break
+    #     for link in soup.find_all("link"):
+    #         rel = link.get('rel')
+    #         if rel:
+    #             rel = rel[0]
+    #             if rel == "canonical":
+    #                 url = link.get('href')
+    #                 break
 
-    else:
-        url = re.url
+    # else:
+    #     url = re.url
     
     #remove anchors
     index = url.find("#")

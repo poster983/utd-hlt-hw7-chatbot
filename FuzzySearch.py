@@ -6,11 +6,10 @@ class FuzzySearch():
         self.keys = dict.keys()
         self.dict = dict
 
-    # Wil use fuzzy search to find the closest key and will then return (value, confidence) or null 
+    # Wil use fuzzy search to find the closest key and will then return (key, value, confidence) or null 
     def find(self, query: str):
         key = process.extractOne(query, self.keys)
         if key == None or key[1] == 0:
             return None
         value = self.dict[key[0]]
-        return (value, key[1])
-    
+        return (key[0], value, key[1])
