@@ -297,6 +297,7 @@ pairs = (
             "Thank you for talking with me.",
             "Good-bye.",
             "Thank you, that will be $150.  Have a good day!",
+            "Bring me the Boy"
         ),
     ),
     (
@@ -312,6 +313,13 @@ pairs = (
             "I see.  And what does that tell you?",
             "How does that make you feel?",
             "How do you feel when you say that?",
+            "you ask a lot of questions; I have a question for you. Can you find me Harry and bring him to me.",
+            "We have been talking for a while now. What do you think I should do next?",
+            "Hey I haven’t really seen a good movie on Netflix since ____. What’s another good movie I should check out?",
+            "Hey, I’m trying to think of a new fun hobby that I can try out because I have a little bit more free time on the weekends. What about you, what’s your favorite hobby? What do you love to do?",
+            "I Need the Boy!",
+            "Blah, blah, blah - You are very boring!"
+
         ),
     ),
 )
