@@ -7,6 +7,8 @@ import nltk
 import json
 import random
 import pickle
+from datetime import datetime
+from text_summary import summarize
 
 
 knowledge_base = {}
@@ -16,22 +18,16 @@ visited_urls = []
 def main():
     starter_url = "https://harrypotter.fandom.com/wiki/Harry_Potter"
 
-    crawl(starter_url, 3)
+    crawl("https://harrypotter.fandom.com/wiki/Harry_Potter", 6, 3)
 
     with open("knowledge_base.json", "w") as f:
         f.write(json.dumps(knowledge_base, indent=1))
     with open("knowledge_base.pickle", "wb") as f:
             pickle.dump(knowledge_base, f)
-
-
-def crawl(starter_url, link_limit=20):
-    
-    _crawl(starter_url, 5, link_limit)
-
     
 
 
-def _crawl(starter_url, depth, link_limit): 
+def crawl(starter_url, depth=10, link_limit=50): 
     print("URL:", starter_url)
     print("Depth: ", depth)
     print("Visited Urls:", len(visited_urls))
@@ -100,11 +96,13 @@ def _crawl(starter_url, depth, link_limit):
                 #print(summary)
                 summary = nltk.sent_tokenize(summary)
 
+            print()
+
         # add to knowlage base
         if summary != "" and title != None:
             knowledge_base[title] = {
                 'link': starter_url,
-                'summary': summary[:10]
+                'summary': summarize(" ".join(summary[:15]))
             }
     except:
         print("Could not Parse!")
@@ -117,7 +115,7 @@ def _crawl(starter_url, depth, link_limit):
     
     alllinks = soup.find_all('a')
     print(len(alllinks))
-    random.shuffle(alllinks)
+    random.Random(datetime.now()).shuffle(alllinks)
     # find urls
     for link in alllinks:
         href = link.get('href')
@@ -141,44 +139,12 @@ def _crawl(starter_url, depth, link_limit):
             index = href.find("#")
             if index != -1: 
                 href = href[:index]
-            # url, res = visit_url(href)
-            # if res == None: # tere was an error visiting the url
-            #     print("Skipping: Error visiting!")
-            #     continue
-            
-            
-            #print(href)
-            
-            # summary_container = soup.find("div", {"id": "mw-content-text"})
-            # if summary_container == None:
-            #     continue
-            # summary = None
-            # for paragraphs in summary_container.find_all("p"):
-            #     if paragraphs.get("class") == None:
-            #         summary = paragraphs.getText()
-            #         break 
-            # if summary == None: # no summary
-            #     continue
-            # summary = soup.find("meta", {"property": "og:description"})
-            # if summary == None: # no summary
-            #      continue
-            # summary = summary.get("content")
-            # summary = re.sub('[^A-Za-z0-9 .,\'\"!()[]{*}$%^]+', '', summary)
-
-            
-            # try:
-            #     wikipage = wikia.page("harrypotter", "Harry Potter")
-            #     title = wikipage.title
-            #     summary = wikipage.summary
-            # except: # was an issue getting content.  Delete
-            #     break
-            
             
             
 
             # Recurce down the link tree
             
-            _crawl(href, depth-1, link_limit)
+            crawl(href, depth-1, link_limit)
             
             
             

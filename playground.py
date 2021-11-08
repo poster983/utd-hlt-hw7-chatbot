@@ -48,3 +48,4 @@ with open('knowledge_base.pickle', 'rb') as handle:
 search = FuzzySearch(knowlage_base)
 
 print(search.find("JK Rowling"))
+

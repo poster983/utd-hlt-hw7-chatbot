@@ -27,6 +27,16 @@ pairs = (
             "[[KNOWLAGE_BASE]]=%1",
             "[[KNOWLAGE_BASE]]=%1"
         ),
+        
+    ),
+
+    (
+        r"who was (.*)",
+        (
+            "[[KNOWLAGE_BASE]]=%1",
+            "[[KNOWLAGE_BASE]]=%1"
+        ),
+        
     ),
     (
         r"Who is (.*)",
@@ -382,7 +392,7 @@ def start_chat(fuzzy_knowlage_base: FuzzySearch):
             if res[2] < 35: # Confidence threshhold
                 res = "You speak nonsense"
             else: #join the sentences together
-                res = " ".join(res[1]["summary"])
+                res = res[1]["summary"]
 
 
         print(res)
