@@ -20,6 +20,39 @@ from FuzzySearch import FuzzySearch
 # regular expression, and a list of possible responses,
 # with group-macros labelled as %1, %2.
 
+class TomRiddle:
+    def __init__(self, fuzzy_knowlage_base: FuzzySearch):
+        self.person = None
+        self._chatbot = Chat(pairs, reflections)
+        self.fuzzy_knowlage_base = fuzzy_knowlage_base
+
+    def respond(self, inp: str):
+        res = self._chatbot.respond(inp)
+        if res.startswith("[[KNOWLAGE_BASE]]="): 
+            res = self.fuzzy_knowlage_base.find(res[len("[[KNOWLAGE_BASE]]="):])
+            print("DEBUG: ", res[0], res[2])
+            if res[2] < 35: # Confidence threshhold
+                res = "You speak nonsense"
+            else: #join the sentences together
+                res = res[1]["summary"]
+        return res
+
+    # WILL START A TEXT BASED CHATBOT
+    def startTerminalChat(self):
+        
+    
+        while True:
+            inp = input("> ")
+            
+            # process Response
+            res = self.respond(inp)
+            print(res)
+
+            # check for commands
+            if inp == "quit":
+                break
+
+
 pairs = (
     (
         r"Tell me about (.*)",
@@ -371,35 +404,15 @@ def main():
     with open('knowledge_base.pickle', 'rb') as handle:
         knowlage_base = pickle.load(handle)
     search = FuzzySearch(knowlage_base)
-    start_chat(search)
+    chatbot = TomRiddle(search)
+    chatbot.startTerminalChat()
 
 
 
 
 
-def start_chat(fuzzy_knowlage_base: FuzzySearch):
-    tom_chatbot = Chat(pairs, reflections)
+
     
-    while True:
-        inp = input("> ")
-        res = tom_chatbot.respond(inp)
-        # process Response
-        
-        #check for knowlage base responses
-        if res.startswith("[[KNOWLAGE_BASE]]="): 
-            res = fuzzy_knowlage_base.find(res[len("[[KNOWLAGE_BASE]]="):])
-            print("DEBUG: ", res[0], res[2])
-            if res[2] < 35: # Confidence threshhold
-                res = "You speak nonsense"
-            else: #join the sentences together
-                res = res[1]["summary"]
-
-
-        print(res)
-
-        # check for commands
-        if inp == "quit":
-            break
 
         
 

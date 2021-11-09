@@ -1,0 +1,137 @@
+<html>
+<head>
+    <title>Goo Test</title> 
+    <style>
+        .ink {
+            position: relative;
+            color: black;
+            opacity: 1;
+            filter: blur(0px);
+            transform: scale(1);
+            width: min-content;
+            transition: all 1s;
+            font-size: 2em;
+            display:inline-block
+        }
+        .ink.out {
+            opacity: 0;
+            filter: blur(20px);
+            transform: scale(0.2);
+        }
+        .input {
+            
+        }
+    </style>
+</head>
+<body style="height: 100vh; background-color: #c27e5b;">
+    
+    <div id='inkcontainer'>
+    </div>
+    
+    <input class="input" title="Talk to the book" placeholder="" type="text" id="input"/>
+    
+
+    <script>
+
+
+        let input = document.getElementById("input")
+        input.addEventListener("keydown", async (e)=>{
+            if(e.keyCode === 13) {
+                //disable the input
+                input.ariaDisabled = true
+                input.disabled = true
+                message = input.value
+                input.value = null 
+                response = await chat(message)
+                await writeSentence(response)
+                
+                await clearSentence()
+
+                input.ariaDisabled = null
+                input.disabled = null
+            }
+        })
+
+        /** Talk to the server and get the chatbot response 
+         * 
+         * @param {String} message - The message to send
+        */
+        let chat = async (message) => {
+            try {
+                let response = await fetch('./chat?'+ new URLSearchParams({message: message}).toString())
+                response = await response.text()
+                return response
+            } catch(e) {
+                console.error(e);
+                return Promise.reject(e)
+            }
+        }
+
+        //let sentence = "dfjksfjksdlj djk lsjk jgfd sjkl;fsdjg fdsjg k;lfdjsk jfksld gjlfd jkls dfgjkl;sdfs jkfl; kldsf jkl;sd jkl;ds djfskl ;jdfkl;";
+
+        let inkcontainer = document.getElementById("inkcontainer")
+
+        let writeSentence = (sentence) => {
+            return new Promise((resolve, reject) => {
+                //split by letters
+                let tokens = sentence.split("");
+                let delay = 5000/tokens.length
+                console.log(delay)
+                let letterCountToBeShown = tokens.length;
+                tokens.forEach((word, index) => {
+                    let span = document.createElement("span");
+                    if(word == " ") {
+                        word = "&nbsp;";
+                    }
+                    span.innerHTML = word;
+                    span.classList.add("ink", "out");
+                    inkcontainer.appendChild(span);
+
+                    setTimeout(()=>{
+                        console.log(span)
+                        span.classList.remove("out");
+                        letterCountToBeShown--;
+                        if(letterCountToBeShown <= 0) {
+                            setTimeout(() => {
+                                resolve()
+                            }, 1000)
+                            
+                        }
+                    }, delay * index);
+                });
+            })
+            
+
+        }
+        
+        let clearSentence = () => {
+
+            return new Promise((resolve, reject) => {
+                //shuffle the array 
+                let children = Array.from(inkcontainer.children)
+
+                let shuffled = children
+                    .map((value) => ({ value, sort: Math.random() }))
+                    .sort((a, b) => a.sort - b.sort)
+                    .map(({ value }) => value)
+                let delay = 2000/children.length
+                //re apply the out class randomly 
+                shuffled.forEach((element, index) => {
+                    
+                    setTimeout(()=> {
+                        element.classList.add("out");
+                    }, index*delay);
+                })
+                setTimeout(()=> {
+                    while (inkcontainer.lastChild) {
+                        inkcontainer.removeChild(inkcontainer.lastChild);
+                    }
+                    resolve()
+
+                }, 2000+1000);
+            })
+        }
+
+        </script>
+</body>
+</html>

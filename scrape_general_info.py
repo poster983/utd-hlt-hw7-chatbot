@@ -26,8 +26,8 @@ def main():
             pickle.dump(knowledge_base, f)
     
 
-
-def crawl(starter_url, depth=10, link_limit=50): 
+#returns -1 if ther was an error 
+def crawl(starter_url, depth=6, link_limit=3): 
     print("URL:", starter_url)
     print("Depth: ", depth)
     print("Visited Urls:", len(visited_urls))
@@ -59,14 +59,10 @@ def crawl(starter_url, depth=10, link_limit=50):
     try:
         if soup.find("html").get("lang") != 'en': # make sure we only travel to english pages
             print("Skipping: Not english!")
-            return
+            return -1
     except:
-        return
-    if depth > 0: 
-        with open("knowledge_base.json", "w") as f:
-            f.write(json.dumps(knowledge_base, indent=1))
-        with open("knowledge_base.pickle", "wb") as f:
-            pickle.dump(knowledge_base, f)
+        return -1
+    
 
     #get the summery and save it in the knowlage base
     #title = soup.find("h1", {"id": "firstHeading"})
@@ -109,6 +105,12 @@ def crawl(starter_url, depth=10, link_limit=50):
     if depth <= 0: 
         return
     
+    if depth > 0: 
+        with open("knowledge_base.json", "w") as f:
+            f.write(json.dumps(knowledge_base, indent=1))
+        with open("knowledge_base.pickle", "wb") as f:
+            pickle.dump(knowledge_base, f)
+
     
     #find and visit child urls
     counter = 0
@@ -144,7 +146,8 @@ def crawl(starter_url, depth=10, link_limit=50):
 
             # Recurce down the link tree
             
-            crawl(href, depth-1, link_limit)
+            if crawl(href, depth-1, link_limit) == -1:
+                continue
             
             
             
