@@ -1,6 +1,9 @@
 <html>
 <head>
     <title>Goo Test</title> 
+    <link rel="preconnect" href="https://fonts.googleapis.com"> 
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
+    <link href="https://fonts.googleapis.com/css2?family=Caveat&family=Cookie&display=swap" rel="stylesheet">
     <style>
         .ink {
             position: relative;
@@ -18,39 +21,278 @@
             filter: blur(20px);
             transform: scale(0.2);
         }
-        .input {
+        body {
+            margin: 0px;
+            background-color: #c27e5b;
+        }
+        main {
+            padding: 15px;
+            min-height: 100vh;
+        }
+        #inkcontainer-question > * {
+            font-family: 'Caveat', cursive;
+        }
+        #inkcontainer-response > * {
+            font-family: 'Cookie', cursive;
+        }
+
+        #inkcontainer-question.response-mode {
             
+        }
+        #inkcontainer-question {
+            padding: 30px;
+            min-height: 41px;
+            position: relative;
+            
+        }
+        
+        #inkcontainer-response {
+            position: relative;
+            flex-wrap: wrap;
+            min-height: 40vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
         }
     </style>
 </head>
-<body style="height: 100vh; background-color: #c27e5b;">
+<body style="">
+    <main>
+        <div id='inkcontainer-question'></div>
+        <div id='inkcontainer-response'></div>
+    </main>
     
-    <div id='inkcontainer'>
-    </div>
     
-    <input class="input" title="Talk to the book" placeholder="" type="text" id="input"/>
+
     
 
     <script>
 
-
-        let input = document.getElementById("input")
-        input.addEventListener("keydown", async (e)=>{
-            if(e.keyCode === 13) {
-                //disable the input
-                input.ariaDisabled = true
-                input.disabled = true
-                message = input.value
-                input.value = null 
-                response = await chat(message)
-                await writeSentence(response)
-                
-                await clearSentence()
-
-                input.ariaDisabled = null
-                input.disabled = null
+        class Ink {
+            constructor(container) {
+                this.container = container
+                this.oldString = ""
             }
+            get isClear() {
+                return this.container.children.length === 0
+            }
+            set isClear(val) {
+                if(val===true) {
+                    this.clear()
+                }
+            }
+            update(string) {
+                return new Promise(async (resolve) => {
+
+                    let tokens = string.split("");
+                    
+                    let removeFromIndex = 0
+                    let oldTokens = this.oldString.split("");
+                    //find what characters need to be removed
+                    tokens.forEach((char, index) => {
+                        if(oldTokens[index] === char) {
+                            removeFromIndex++
+                        } else { // once the string stops being the same, delete everything after it
+                            return
+                        }
+                    })
+                    
+                    tokens = tokens.slice(removeFromIndex)
+                    //Remove characters that are no longer in the string
+                    if(removeFromIndex != this.oldString.length) { // printed  
+                        let children = Array.from(this.container.children)
+                        children = children.slice(removeFromIndex)
+                        children.forEach((child)=>{
+                            child.remove()
+                        })
+                        // for(child of children) {
+                        //     child.remove()
+                        // }
+                        
+                        //await this._clearChars(children)
+                        
+                        
+                    }
+                
+                    console.log(removeFromIndex, string, this.oldString)
+                    this.oldString = string
+
+                    //Print characters
+                    let delay = 5000/tokens.length
+                    let letterCountToBeShown = tokens.length;
+                    tokens.forEach((word, index) => {
+                        let span = document.createElement("span");
+                        if(word == " ") {
+                            word = "&nbsp;";
+                        }
+                        span.innerHTML = word;
+                        span.classList.add("ink", "out");
+                        this.container.appendChild(span);
+
+                        setTimeout(()=>{
+                            console.log(span)
+                            span.classList.remove("out");
+                            letterCountToBeShown--;
+                            if(letterCountToBeShown <= 0) {
+                                setTimeout(() => {
+                                    resolve()
+                                }, 1000)
+                                
+                            }
+                        }, delay * index);
+                    });
+                });
+            }
+
+            /**
+             * Clears everything
+             */
+            clear() {
+                
+                    this.oldString = "";
+                    //shuffle the array 
+                    let children = Array.from(this.container.children)
+
+                    return this._clearChars(children);
+            }
+
+            /**
+             * Clears the given elements 
+             * @param {Array<Element>} elements
+             * @returns {Promise<void>}
+             */
+            _clearChars(elements) {
+                return new Promise((resolve, reject) => {
+                    //let children = Array.from(this.container.children)
+                    let shuffled = this._shuffle(elements);
+                    
+                    let delay = 2000/elements.length
+                    //re apply the out class randomly 
+                    shuffled.forEach((element, index) => {
+                        
+                        setTimeout(()=> {
+                            element.classList.add("out");
+                        }, index*delay);
+                    })
+                    setTimeout(()=> {
+                        console.log(elements)
+                        elements.forEach((element) => {
+                            element.remove()
+                        })
+                        // for(element of elements) {
+                            
+                        // }
+                        resolve()
+
+                    }, 2000+1000);
+                })
+            }
+
+            /**
+             * Shuffles an Array
+             * @param {[]} values
+             * @returns {[]} - Ramdomized indexes
+             */
+            _shuffle(values) {
+                return values
+                        .map((value) => ({ value, sort: Math.random() }))
+                        .sort((a, b) => a.sort - b.sort)
+                        .map(({ value }) => value)
+            }
+
+            
+        }
+
+        let questionInk = new Ink(document.getElementById("inkcontainer-question"))
+        let responseInk = new Ink(document.getElementById("inkcontainer-response"))
+
+        let inputValue = ""
+        let cooldown;
+        let doneAnimating = true
+        let disableInput = false
+        //input
+        document.addEventListener("keydown", (e) => {
+            if(cooldown) {
+                clearTimeout(cooldown);
+            }
+            if(!responseInk.isClear && doneAnimating) {
+                disableInput = false;
+                responseInk.clear()
+                
+            }
+            if(disableInput) {
+                return;
+            }
+            // do{
+                if(e.keyCode == 8) { //backspace
+                    if(inputValue.length >0) {
+                        inputValue = inputValue.substring(0, inputValue.length-1)
+                    }
+                    
+                } else if(e.shiftKey || e.getModifierState("CapsLock")) { // capitalize
+                    let char = String.fromCharCode(e.keyCode);
+                    if(e.keyCode == 32 || char.toUpperCase() != char.toLowerCase() || char.codePointAt(0) > 127){
+                        inputValue = inputValue+char
+                    }
+                        
+                } else {
+                    let char = String.fromCharCode(e.keyCode).toLowerCase();
+                    if(e.keyCode == 32 || char.toUpperCase() != char.toLowerCase() || char.codePointAt(0) > 127){
+                        inputValue = inputValue+char
+                    }
+                }
+            //     console.log(e.repeat)
+            // } while(e.repeat == true || )
+            
+            questionInk.update(inputValue)
+
+            cooldown = setTimeout(async ()=> { // Wait 5s between key strokes before sending\
+                if(inputValue.length != 0) {
+                    try {
+                        disableInput = true;
+                        doneAnimating = false;
+
+                        await questionInk.clear(inputValue)
+                        res = await chat(inputValue)
+                        inputValue = ""
+                        await responseInk.update(res)
+                        doneAnimating = true;
+
+                    } catch(e) {
+                        await responseInk.update("There was an error.  Check the console for more.")
+                        await responseInk.clear()
+                        inputValue = ""
+                        console.error(e)
+                        disableInput = false
+                        doneAnimating = true;
+                    }
+                }
+                
+            }, 5000)
+            
+            console.log(inputValue)
         })
+
+        
+
+        // let input = document.getElementById("input")
+        // input.addEventListener("keydown", async (e)=>{
+        //     if(e.keyCode === 13) {
+        //         //disable the input
+        //         input.ariaDisabled = true
+        //         input.disabled = true
+        //         message = input.value
+        //         input.value = null 
+        //         response = await chat(message)
+        //         await responseInk.update(response)
+                
+        //         await responseInk.clear()
+
+        //         input.ariaDisabled = null
+        //         input.disabled = null
+        //     }
+        // })
 
         /** Talk to the server and get the chatbot response 
          * 
@@ -67,70 +309,75 @@
             }
         }
 
-        //let sentence = "dfjksfjksdlj djk lsjk jgfd sjkl;fsdjg fdsjg k;lfdjsk jfksld gjlfd jkls dfgjkl;sdfs jkfl; kldsf jkl;sd jkl;ds djfskl ;jdfkl;";
+        
 
-        let inkcontainer = document.getElementById("inkcontainer")
+        // let oldString = ""
+        // let updateInk = (string, container=document.getElementById("inkcontainer-question")) => {
+            
+        // }
 
-        let writeSentence = (sentence) => {
-            return new Promise((resolve, reject) => {
-                //split by letters
-                let tokens = sentence.split("");
-                let delay = 5000/tokens.length
-                console.log(delay)
-                let letterCountToBeShown = tokens.length;
-                tokens.forEach((word, index) => {
-                    let span = document.createElement("span");
-                    if(word == " ") {
-                        word = "&nbsp;";
-                    }
-                    span.innerHTML = word;
-                    span.classList.add("ink", "out");
-                    inkcontainer.appendChild(span);
+        // //let inkcontainer = document.getElementById("inkcontainer-response")
 
-                    setTimeout(()=>{
-                        console.log(span)
-                        span.classList.remove("out");
-                        letterCountToBeShown--;
-                        if(letterCountToBeShown <= 0) {
-                            setTimeout(() => {
-                                resolve()
-                            }, 1000)
+        // let writeSentence = (sentence, container=document.getElementById("inkcontainer-response")) => {
+        //     return new Promise((resolve, reject) => {
+        //         //split by letters
+        //         let tokens = sentence.split("");
+        //         let delay = 5000/tokens.length
+        //         console.log(delay)
+        //         let letterCountToBeShown = tokens.length;
+        //         tokens.forEach((word, index) => {
+        //             let span = document.createElement("span");
+        //             if(word == " ") {
+        //                 word = "&nbsp;";
+        //             }
+        //             span.innerHTML = word;
+        //             span.classList.add("ink", "out");
+        //             container.appendChild(span);
+
+        //             setTimeout(()=>{
+        //                 console.log(span)
+        //                 span.classList.remove("out");
+        //                 letterCountToBeShown--;
+        //                 if(letterCountToBeShown <= 0) {
+        //                     setTimeout(() => {
+        //                         resolve()
+        //                     }, 1000)
                             
-                        }
-                    }, delay * index);
-                });
-            })
+        //                 }
+        //             }, delay * index);
+        //         });
+        //     })
             
 
-        }
+        // }
         
-        let clearSentence = () => {
+        // let clearSentence = (container=document.getElementById("inkcontainer-response")) => {
 
-            return new Promise((resolve, reject) => {
-                //shuffle the array 
-                let children = Array.from(inkcontainer.children)
+        //     return new Promise((resolve, reject) => {
+        //         //shuffle the array 
+        //         let children = Array.from(container.children)
 
-                let shuffled = children
-                    .map((value) => ({ value, sort: Math.random() }))
-                    .sort((a, b) => a.sort - b.sort)
-                    .map(({ value }) => value)
-                let delay = 2000/children.length
-                //re apply the out class randomly 
-                shuffled.forEach((element, index) => {
+        //         let shuffled = children
+        //             .map((value) => ({ value, sort: Math.random() }))
+        //             .sort((a, b) => a.sort - b.sort)
+        //             .map(({ value }) => value)
+        //         let delay = 2000/children.length
+        //         //re apply the out class randomly 
+        //         shuffled.forEach((element, index) => {
                     
-                    setTimeout(()=> {
-                        element.classList.add("out");
-                    }, index*delay);
-                })
-                setTimeout(()=> {
-                    while (inkcontainer.lastChild) {
-                        inkcontainer.removeChild(inkcontainer.lastChild);
-                    }
-                    resolve()
+        //             setTimeout(()=> {
+        //                 element.classList.add("out");
+        //             }, index*delay);
+        //         })
+        //         setTimeout(()=> {
+        //             while (container.lastChild) {
+        //                 container.removeChild(container.lastChild);
+        //             }
+        //             resolve()
 
-                }, 2000+1000);
-            })
-        }
+        //         }, 2000+1000);
+        //     })
+        // }
 
         </script>
 </body>

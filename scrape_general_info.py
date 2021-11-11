@@ -17,7 +17,7 @@ visited_urls = []
 
 def main():
     starter_url = "https://harrypotter.fandom.com/wiki/Harry_Potter"
-
+    crawl("https://harrypotter.fandom.com/wiki/Killing_Curse", 6, 3)
     crawl("https://harrypotter.fandom.com/wiki/Harry_Potter", 6, 3)
 
     with open("knowledge_base.json", "w") as f:
@@ -42,9 +42,9 @@ def crawl(starter_url, depth=6, link_limit=3):
     parent_url_parse = urlparse(starter_url)
     domain = parent_url_parse.netloc
     url_key = parent_url_parse.netloc+parent_url_parse.path
-    if url_key in visited_urls: 
-        print("Skipping: Visited!")
-        return
+    # if url_key in visited_urls: 
+    #     print("Skipping: Visited!")
+    #     return
 
     if depth != 0: 
         visited_urls.append(url_key)
@@ -132,7 +132,9 @@ def crawl(starter_url, depth=6, link_limit=3):
                 print("Skipping: Visited!")
                 continue
 
-            
+            if "/Talk:" in href or "/Category:" in href or "/Help:" in href: 
+                print("Skipping: Wiki Page")
+                continue
 
             if cur_domain != domain: # we want to stay within our domain
                 print("Skipping: Not in our domain!")
