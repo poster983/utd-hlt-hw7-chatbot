@@ -20,9 +20,9 @@ def home_page():
 @app.route("/chat")
 def chat():
     message = request.args.get('message', None)
-    res = {'response': None}
     if message != None:
-        return chatbot.respond(message)
-        return 
+        res = chatbot.respond(message)
+        print(res)
+        return res
     else:
         return "Invalid Message", 400

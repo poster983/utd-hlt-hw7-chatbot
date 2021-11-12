@@ -43,7 +43,7 @@
             padding: 30px;
             min-height: 41px;
             position: relative;
-            
+
         }
         
         #inkcontainer-response {
@@ -51,7 +51,7 @@
             flex-wrap: wrap;
             min-height: 40vh;
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             justify-content: center;
 
         }
@@ -276,24 +276,6 @@
 
         
 
-        // let input = document.getElementById("input")
-        // input.addEventListener("keydown", async (e)=>{
-        //     if(e.keyCode === 13) {
-        //         //disable the input
-        //         input.ariaDisabled = true
-        //         input.disabled = true
-        //         message = input.value
-        //         input.value = null 
-        //         response = await chat(message)
-        //         await responseInk.update(response)
-                
-        //         await responseInk.clear()
-
-        //         input.ariaDisabled = null
-        //         input.disabled = null
-        //     }
-        // })
-
         /** Talk to the server and get the chatbot response 
          * 
          * @param {String} message - The message to send
@@ -310,74 +292,6 @@
         }
 
         
-
-        // let oldString = ""
-        // let updateInk = (string, container=document.getElementById("inkcontainer-question")) => {
-            
-        // }
-
-        // //let inkcontainer = document.getElementById("inkcontainer-response")
-
-        // let writeSentence = (sentence, container=document.getElementById("inkcontainer-response")) => {
-        //     return new Promise((resolve, reject) => {
-        //         //split by letters
-        //         let tokens = sentence.split("");
-        //         let delay = 5000/tokens.length
-        //         console.log(delay)
-        //         let letterCountToBeShown = tokens.length;
-        //         tokens.forEach((word, index) => {
-        //             let span = document.createElement("span");
-        //             if(word == " ") {
-        //                 word = "&nbsp;";
-        //             }
-        //             span.innerHTML = word;
-        //             span.classList.add("ink", "out");
-        //             container.appendChild(span);
-
-        //             setTimeout(()=>{
-        //                 console.log(span)
-        //                 span.classList.remove("out");
-        //                 letterCountToBeShown--;
-        //                 if(letterCountToBeShown <= 0) {
-        //                     setTimeout(() => {
-        //                         resolve()
-        //                     }, 1000)
-                            
-        //                 }
-        //             }, delay * index);
-        //         });
-        //     })
-            
-
-        // }
-        
-        // let clearSentence = (container=document.getElementById("inkcontainer-response")) => {
-
-        //     return new Promise((resolve, reject) => {
-        //         //shuffle the array 
-        //         let children = Array.from(container.children)
-
-        //         let shuffled = children
-        //             .map((value) => ({ value, sort: Math.random() }))
-        //             .sort((a, b) => a.sort - b.sort)
-        //             .map(({ value }) => value)
-        //         let delay = 2000/children.length
-        //         //re apply the out class randomly 
-        //         shuffled.forEach((element, index) => {
-                    
-        //             setTimeout(()=> {
-        //                 element.classList.add("out");
-        //             }, index*delay);
-        //         })
-        //         setTimeout(()=> {
-        //             while (container.lastChild) {
-        //                 container.removeChild(container.lastChild);
-        //             }
-        //             resolve()
-
-        //         }, 2000+1000);
-        //     })
-        // }
 
         </script>
 </body>
