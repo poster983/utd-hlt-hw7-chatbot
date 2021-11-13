@@ -16,6 +16,7 @@ from chatterbot import ChatBot
 from nltk.chat.util import Chat, reflections
 import pickle
 from FuzzySearch import FuzzySearch
+from person import UserBase
 
 # a table of response pairs, where each pair consists of a
 # regular expression, and a list of possible responses,
@@ -24,6 +25,7 @@ from FuzzySearch import FuzzySearch
 
 class TomRiddle:
     def __init__(self, fuzzy_knowlage_base: FuzzySearch):
+        self.userBase = UserBase()
         self.person = None
         self._chatbot = Chat(pairs, reflections)
         self.fuzzy_knowlage_base = fuzzy_knowlage_base
@@ -41,7 +43,7 @@ class TomRiddle:
                 'chatterbot.logic.BestMatch'
         ])
 
-    def respond(self, inp: str):
+    def respond(self, inp: str, user_id: str):
         res = self._chatbot.respond(inp)
         if res.startswith("[[KNOWLAGE_BASE]]="): 
             res = self.fuzzy_knowlage_base.find(res[len("[[KNOWLAGE_BASE]]="):])
@@ -50,6 +52,17 @@ class TomRiddle:
                 res = "You speak nonsense"
             else: #join the sentences together
                 res = res[1]["summary"]
+        elif res.startswith("[[PERSON.SETHOUSE]]="): 
+            house = res[len("[[PERSON.SETHOUSE]]="):]
+            
+            #get method
+            user = self.userBase.get(user_id)
+            #modify user class
+            user.house = house
+            #run the update mehtod 
+            self.userBase.update(user_id, user)
+            
+
         else:
             res = self.chatterbot.get_response(res).text
         
@@ -113,12 +126,23 @@ pairs = (
         ),
     ),
     (
-        r"what do you know about the chamber of secrets (.*)",
+        r"what do you know about (.*)",
         (
             "[[KNOWLAGE_BASE]]=%1",
             "[[KNOWLAGE_BASE]]=%1"
         ),
     ),
+
+    #Person stuff 
+    (
+        r"my house is (.*)",
+        (
+            "[[PERSON.SETHOUSE]]=%1",
+            "[[PERSON.SETHOUSE]]=%1"
+        ),
+    ),
+
+
     ( # Chatterbot 
         r"(.*)",
         (
