@@ -20,8 +20,11 @@ def home_page():
 @app.route("/chat")
 def chat():
     message = request.args.get('message', None)
+    user_id = request.args.get('userID', None)
+    if user_id == None: 
+        return "User ID Required", 400
     if message != None:
-        res = chatbot.respond(message)
+        res = chatbot.respond(message, user_id)
         print(res)
         return res
     else:
