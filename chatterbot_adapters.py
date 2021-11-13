@@ -25,11 +25,7 @@ class KnowlageBaseAdapter(LogicAdapter):
                 
                 return True
         return False
-        if statement.text in startswith:
-            print("TRUE")
-            return True
-        print("False")
-        return False
+
 
     def process(self, input_statement, additional_response_selection_parameters):
         query = input_statement.text.lower()

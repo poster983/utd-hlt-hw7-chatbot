@@ -3,7 +3,7 @@ from chatterbot import ChatBot
 bot = ChatBot('Tom Riddle',
     storage_adapter='chatterbot.storage.SQLStorageAdapter',
     database_uri='sqlite:///database.sqlite3',
-    read_only=False,
+    read_only=True,
     logic_adapters=[
         # 'chatterbot_adapters.KnowlageBaseAdapter'
         # {

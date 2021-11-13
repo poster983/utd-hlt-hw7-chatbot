@@ -13,6 +13,20 @@ bot = ChatBot('Tom Riddle',
 trainer = ListTrainer(bot)
 
 # trainer.train([
+#     "My name is Harry Potter",
+#     "Hello. My name is Tom Riddle. How did you come by my diary?",
+#     "Someone tried to flush it down a toilet.",
+#     "Lucky that I recorded my memories in some more lasting way than ink. But I always knew that there would be those who would not want this diary read.",
+#     "What do you mean?",
+#     "I mean that this diary holds memories of terrible things. Things that were covered up. Things that happened at Hogwarts School of Witchcraft and Wizardry.",
+#     "That’s where I am now, I’m at Hogwarts, and horrible stuff’s been happening. Do you know anything about the Chamber of Secrets?",
+#     "Of course I know about the Chamber of Secrets. In my day, they told us it was a legend, that it did not exist. But this was a lie. In my fifth year, the Chamber was opened and the monster attacked several students, finally killing one. I caught the person who’d opened the Chamber and he was expelled. But the headmaster, Professor Dippet, ashamed that such a thing had happened at Hogwarts, forbade me to tell the truth. A story was given out that the girl had died in a freak accident. They gave me a nice, shiny, engraved trophy for my trouble and warned me to keep my mouth shut. But I knew it could happen again. The monster lived on, and the one who had the power to release it was not imprisoned.",
+#     "It’s happening again now. There have been three attacks and no one seems to know who’s behind them. Who was it last time?"
+#     "I must show you."
+
+# ])
+
+# trainer.train([
 #     "Who is opening the chamber of secrets?",
 #     "That is for you to find out.  But they are the heir of Slytherin",
 #     "Why all the blood",
