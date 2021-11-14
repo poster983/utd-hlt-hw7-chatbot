@@ -17,7 +17,7 @@ from nltk.chat.util import Chat, reflections
 import pickle
 from FuzzySearch import FuzzySearch
 from person import UserBase
-
+   # test
 # a table of response pairs, where each pair consists of a
 # regular expression, and a list of possible responses,
 # with group-macros labelled as %1, %2.
@@ -98,12 +98,42 @@ class TomRiddle:
 
             res = "Ahh I didnt know you knew " + user_char + ", I used to know him back in the days."
 
+        # get person name
         elif res == "[[PERSON.GETNAME]]":
             # get the user name
             user = self.userBase.get(user_id)
             if user.name != None:
                 res = "You are " + user.name
             else: 
+                res = "You haven't told me yet... "
+        # get person house
+        elif res == "[[PERSON.GETHOUSE]]":
+            # get the user name
+            user = self.userBase.get(user_id)
+            if user.name != None:
+                if user.house == "Slytherine":
+                    res = "Ofcourse I remember you, you are true believer!"
+                else:
+                    res = "Ohh you are from " + user.house + ", you are not worth my time!"
+            else:
+                res = "You haven't told me yet... "
+
+        # get person char
+        elif res == "[[PERSON.GETCHAR]]":
+            # get the user name
+            user = self.userBase.get(user_id)
+            if user.name != None:
+                res = "Your friend's with " + user.characteristic
+            else:
+                res = "You haven't told me yet... "
+
+        # get person hobby
+        elif res == "[[PERSON.GETHOBBY]]":
+            # get the user name
+            user = self.userBase.get(user_id)
+            if user.name != None:
+                res = "You like to " + user.hobby
+            else:
                 res = "You haven't told me yet... "
 
         else:
@@ -284,6 +314,51 @@ pairs = (
             "[[PERSON.GETHOUSE]]"
         ),
     ),
+    # read from char
+(
+        r"do you know my friend(.*)",
+        (
+            "[[PERSON.GETCHAR]]",
+            "[[PERSON.GETCHAR]]"
+        ),
+    ),
+    (
+        r"whats my friend(.*)",
+        (
+            "[[PERSON.GETCHAR]]",
+            "[[PERSON.GETCHAR]]"
+        ),
+    ),
+    (
+        r"what about my friend(.*)",
+        (
+            "[[PERSON.GETCHAR]]",
+            "[[PERSON.GETCHAR]]"
+        ),
+    ),
+    # read from hobbies
+(
+        r"do you know what i like to do(.*)",
+        (
+            "[[PERSON.GETHOBBY]]",
+            "[[PERSON.GETHOBBY]]"
+        ),
+    ),
+    (
+        r"whats my favorite thing to do(.*)",
+        (
+            "[[PERSON.GETHOBBY]]",
+            "[[PERSON.GETHOBBY]]"
+        ),
+    ),
+    (
+        r"what about my hobbies(.*)",
+        (
+            "[[PERSON.GETHOBBY]]",
+            "[[PERSON.GETHOBBY]]"
+        ),
+    ),
+
 
     ( # Chatterbot 
         r"(.*)",
