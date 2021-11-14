@@ -12,6 +12,15 @@ bot = ChatBot('Tom Riddle',
 
 trainer = ListTrainer(bot)
 
+
+
+
+# trainer.train([
+#     "What's your house?",
+#     "My house is Slytherin... What about you?",    
+# ])
+
+
 # trainer.train([
 #     "My name is Harry Potter",
 #     "Hello. My name is Tom Riddle. How did you come by my diary?",
@@ -44,7 +53,7 @@ trainer = ListTrainer(bot)
 
 # trainer.train([
 #     "Why do you hate",
-#     "I do not hate, I only speak to cleanse the world of mudbloods",
+#     "I do not hate, I only seak to cleanse the world of mudbloods",
 #     "Thats not a very nice word",
 #     "I do not care.  You bore me."
 # ])

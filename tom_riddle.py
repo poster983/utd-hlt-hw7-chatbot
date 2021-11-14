@@ -61,7 +61,50 @@ class TomRiddle:
             user.house = house
             #run the update mehtod 
             self.userBase.update(user_id, user)
+            if user.house == None:
+                res = "You waste my time. That is not a house fool!"
+            elif user.house in ["Gryffindor", "Hufflepuff", "Ravenclaw"]:
+                res = "You filthy blood traitor!"
+            else:
+                res = "Finally, someone worth talking to."
+                
+            #conditional response
             
+        elif res.startswith("[[PERSON.SETNAME]]="):
+            user_name = res[len("[[PERSON.SETNAME]]="):]
+
+            user = self.userBase.get(user_id)
+            user.name = user_name
+            self.userBase.update(user_id, user)
+
+            res = "Nice to meet you " + user_name + ", I'll see if you're worth my time!"
+            
+        
+        elif res.startswith("[[PERSON.SETHOBBY]]="):
+            user_hobby = res[len("[[PERSON.SETHOBBY]]="):]
+
+            user = self.userBase.get(user_id)
+            user.hobby = user_hobby
+            self.userBase.update(user_id, user)
+
+            res = "Ahh I see that you like " + user_hobby 
+        
+        elif res.startswith("[[PERSON.SETCHAR]]="):
+            user_char = res[len("[[PERSON.SETCHAR]]="):]
+
+            user = self.userBase.get(user_id)
+            user.characteristic = user_char
+            self.userBase.update(user_id, user)
+
+            res = "Ahh I didnt know you knew " + user_char + ", I used to know him back in the days."
+
+        elif res == "[[PERSON.GETNAME]]":
+            # get the user name
+            user = self.userBase.get(user_id)
+            if user.name != None:
+                res = "You are " + user.name
+            else: 
+                res = "You haven't told me yet... "
 
         else:
             res = self.chatterbot.get_response(res).text
@@ -69,14 +112,14 @@ class TomRiddle:
         return res
 
     # WILL START A TEXT BASED CHATBOT
-    def startTerminalChat(self):
+    def startTerminalChat(self, user_id):
         
     
         while True:
             inp = input("> ")
             
             # process Response
-            res = self.respond(inp)
+            res = self.respond(inp, user_id)
             print(res)
 
             # check for commands
@@ -134,6 +177,7 @@ pairs = (
     ),
 
     #Person stuff 
+    # house 
     (
         r"my house is (.*)",
         (
@@ -141,7 +185,83 @@ pairs = (
             "[[PERSON.SETHOUSE]]=%1"
         ),
     ),
-
+    (
+        r"i am in (.*)",
+        (
+            "[[PERSON.SETHOUSE]]=%1",
+            "[[PERSON.SETHOUSE]]=%1"
+        ),
+        
+    ),
+    #Name
+    (
+        r"my name is (.*)",
+        (
+            "[[PERSON.SETNAME]]=%1",
+            "[[PERSON.SETNAME]]=%1"
+        ),
+    ),
+    (
+        r"I am (.*)",
+        (
+            "[[PERSON.SETNAME]]=%1",
+            "[[PERSON.SETNAME]]=%1"
+        ),
+    ),
+    #hobby
+    (
+        r"my hobbies are (.*)",
+        (
+            "[[PERSON.SETHOBBY]]=%1",
+            "[[PERSON.SETHOBBY]]=%1"
+        ),
+    ),
+    (
+        r"i like to (.*)",
+        (
+            "[[PERSON.SETHOBBY]]=%1",
+            "[[PERSON.SETHOBBY]]=%1"
+        ),
+    ),
+     #Characteristic (Who is their fav person / Who is their friend)
+    (
+        r"my favorite person is (.*)",
+        (
+            "[[PERSON.SETCHAR]]=%1",
+            "[[PERSON.SETCHAR]]=%1"
+        ),
+    ),
+    (
+        r"my friend is (.*)",
+        (
+            "[[PERSON.SETCHAR]]=%1",
+            "[[PERSON.SETCHAR]]=%1"
+        ),
+    ),
+    
+    # Read from user data
+    #Name
+    (
+        r"do you know who i am(.*)",
+        (
+            "[[PERSON.GETNAME]]",
+            "[[PERSON.GETNAME]]"
+        ),
+    ),
+    (
+        r"whats my name(.*)",
+        (
+            "[[PERSON.GETNAME]]",
+            "[[PERSON.GETNAME]]"
+        ),
+    ),
+    (
+        r"what about my name(.*)",
+        (
+            "[[PERSON.GETNAME]]",
+            "[[PERSON.GETNAME]]"
+        ),
+    ),
 
     ( # Chatterbot 
         r"(.*)",
@@ -458,12 +578,12 @@ pairs = (
 
 
 def main():
-    
+    user_id = "1234532454366534543543"
     with open('knowledge_base.pickle', 'rb') as handle:
         knowlage_base = pickle.load(handle)
     search = FuzzySearch(knowlage_base)
     chatbot = TomRiddle(search)
-    chatbot.startTerminalChat()
+    chatbot.startTerminalChat(user_id)
 
 
 

@@ -3,13 +3,31 @@ import pickle
 
 import pickle
 
+from thefuzz import process
+
 class User():
     def __init__(self, name=None, hobby=None, characteristic=None, house=None, nickname=None):
         self.name = name
         self.hobby = hobby
         self.characteristic = characteristic
+        self._house = None
         self.house = house
         self.nickname = nickname
+
+    @property
+    def house(self):
+        return self._house
+
+    @house.setter
+    def house(self, h):
+        if h == None:
+            self._house == h
+            return
+        values = ["Gryffindor", "Hufflepuff", "Ravenclaw", "Slytherin"]
+        fuzz = process.extractOne(h, values)
+        if fuzz[1] < 50:
+            self._house = None
+        self._house = fuzz[0]
 
     def getName(self):
         return self.name
@@ -21,17 +39,11 @@ class User():
         self.name = name
         self.nickname = name
 
-    def setHouse(self, house):
-        self.house = house
-
-    def getHouse(self):
-        return self.house
-
     def setHobby(self, hobby):
         self.hobby = hobby
 
     def getHobby(self):
-        self.hobby
+        return self.hobby
 
     def setChar(self, characteristic):
         self.characteristic = characteristic
