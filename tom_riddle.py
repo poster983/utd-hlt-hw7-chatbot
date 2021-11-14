@@ -262,6 +262,28 @@ pairs = (
             "[[PERSON.GETNAME]]"
         ),
     ),
+    # Read from House
+    (
+        r"do you know my(.*)",
+        (
+            "[[PERSON.GETNAME]]",
+            "[[PERSON.GETNAME]]"
+        ),
+    ),
+    (
+        r"whats my name(.*)",
+        (
+            "[[PERSON.GETNAME]]",
+            "[[PERSON.GETNAME]]"
+        ),
+    ),
+    (
+        r"what about my name(.*)",
+        (
+            "[[PERSON.GETNAME]]",
+            "[[PERSON.GETNAME]]"
+        ),
+    ),
 
     ( # Chatterbot 
         r"(.*)",
