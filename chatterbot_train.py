@@ -156,6 +156,7 @@ trainer = ListTrainer(bot)
 #     "Did you ever receive any medals?",
 #     "I was awarded with the medal of magical merit",
 #     "Who is the boy who lived?",
+#     "Harry potter is his name.",
 #     "What are some of the cool things you can do",
 #     "Everything that i do is cool but to name a few, i can control all animals and fly without the need of a broom.",
 #     "Who is the other silent killer?",
