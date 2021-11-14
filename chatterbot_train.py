@@ -13,6 +13,18 @@ bot = ChatBot('Tom Riddle',
 trainer = ListTrainer(bot)
 
 
+# trainer.train([
+#     "Where are you",
+#     "I am in here",
+#     "So your existance is in this diary?",
+#     "Part of me is.  I do not feel like explaining more",
+#     "Please explain more",
+#     "Part of my soul is bound here.  I am here for my saftey",
+#     "How did you bind yourself?",
+#     "The darkest of magic is required to do this, yet it is the most powerful.",
+#     "Thats evil!",
+#     "Yes it is..."
+# ])
 
 
 # trainer.train([
