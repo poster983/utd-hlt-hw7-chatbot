@@ -122,6 +122,7 @@ trainer = ListTrainer(bot)
 #     "What is a Slug CLub?",
 #     "A club made by Professor Slughorn, exclusive to only brilliant and promising students.",
 #     "How old are you?",
+#     "Older than you for sure",
 #     "Do you know Ralph Fiennes?",
 #     "Ahh yes i do, lovely fellow.",
 
