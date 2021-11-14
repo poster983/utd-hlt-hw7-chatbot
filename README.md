@@ -6,15 +6,21 @@ Tom Riddle Chatbot
 > flask run 
 ```
 
+## To Install
+```shell 
+> python3 -m venv .venv
+> source ./.venv/bin/activate
+> pip3 install -r requirements.txt
+```
 
-## Note for M1 Macs  
+### Note for M1 Macs  
 [See This](https://github.com/explosion/spaCy/issues/7962)
 
 1. ```shell 
     > brew install openblas
     ```
 2. ```shell
-    > python3.9 -m venv myvenv
+    > python3.9 -m venv .venv
     > source myvenv/bin/activate
     > python -m pip install -U pip setuptools wheel
     ```
@@ -31,4 +37,9 @@ spacy==2.1.9
 ```  
 ```shell
 > PIP_CONSTRAINT=constraints.txt OPENBLAS="$(brew --prefix openblas)" pip install chatterbot
+```
+
+5. 
+```shell 
+> pip3 install -r requirements.txt
 ```
