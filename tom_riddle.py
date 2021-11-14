@@ -264,21 +264,21 @@ pairs = (
     ),
     # Read from House
     (
-        r"do you know my(.*)",
+        r"do you know my house(.*)",
+        (
+            "[[PERSON.GET]]",
+            "[[PERSON.GETNAME]]"
+        ),
+    ),
+    (
+        r"whats my house(.*)",
         (
             "[[PERSON.GETNAME]]",
             "[[PERSON.GETNAME]]"
         ),
     ),
     (
-        r"whats my name(.*)",
-        (
-            "[[PERSON.GETNAME]]",
-            "[[PERSON.GETNAME]]"
-        ),
-    ),
-    (
-        r"what about my name(.*)",
+        r"what about my house(.*)",
         (
             "[[PERSON.GETNAME]]",
             "[[PERSON.GETNAME]]"

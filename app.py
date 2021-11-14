@@ -11,7 +11,9 @@ with open('knowledge_base.pickle', 'rb') as handle:
 search = FuzzySearch(knowlage_base)
 chatbot = TomRiddle(search)
 
-app = Flask(__name__)
+app = Flask(__name__,
+    static_url_path='',
+    static_folder='./static')
 
 @app.route("/")
 def home_page():
