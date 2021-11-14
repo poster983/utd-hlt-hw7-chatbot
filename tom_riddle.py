@@ -266,22 +266,22 @@ pairs = (
     (
         r"do you know my house(.*)",
         (
-            "[[PERSON.GET]]",
-            "[[PERSON.GETNAME]]"
+            "[[PERSON.GETHOUSE]]",
+            "[[PERSON.GETHOUSE]]"
         ),
     ),
     (
         r"whats my house(.*)",
         (
-            "[[PERSON.GETNAME]]",
-            "[[PERSON.GETNAME]]"
+            "[[PERSON.GETHOUSE]]",
+            "[[PERSON.GETHOUSE]]"
         ),
     ),
     (
         r"what about my house(.*)",
         (
-            "[[PERSON.GETNAME]]",
-            "[[PERSON.GETNAME]]"
+            "[[PERSON.GETHOUSE]]",
+            "[[PERSON.GETHOUSE]]"
         ),
     ),
 
