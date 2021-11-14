@@ -17,8 +17,10 @@ visited_urls = []
 
 def main():
     starter_url = "https://harrypotter.fandom.com/wiki/Harry_Potter"
-    crawl("https://harrypotter.fandom.com/wiki/Killing_Curse", 6, 3)
     crawl("https://harrypotter.fandom.com/wiki/Harry_Potter", 6, 3)
+    # crawl("https://harrypotter.fandom.com/wiki/Killing_Curse", 6, 3)
+    # crawl("https://harrypotter.fandom.com/wiki/Open_Sesame", 3, 5)
+    # crawl("https://harrypotter.fandom.com/wiki/Vera_Verto", 3, 5)
 
     with open("knowledge_base.json", "w") as f:
         f.write(json.dumps(knowledge_base, indent=1))
@@ -77,8 +79,8 @@ def crawl(starter_url, depth=6, link_limit=3):
             title = re.sub('[^A-Za-z0-9 ]+', '', title)
         # Parse out the summary
 
-        desc = soup.find("div", {"id": "mw-content-text"})
-        desc = desc.find("div", {"class": "mw-parser-output"}, recursive=False)
+        content_text = soup.find("div", {"id": "mw-content-text"})
+        desc = content_text.find("div", {"class": "mw-parser-output"}, recursive=False)
         paragraphs = desc.find_all("p", {'class': None}, recursive=False)
 
         summary = ""
@@ -90,16 +92,21 @@ def crawl(starter_url, depth=6, link_limit=3):
                 print("Skipping: Could not paarse Summary!")
             else: 
                 #print(summary)
+                #remove wikipedia refrence blocks
+                summary = re.sub(r"[\[{]{1}[\w\d\s]*[}\]]{1}", "", summary)
                 summary = nltk.sent_tokenize(summary)
 
-            print()
+            
 
         # add to knowlage base
         if summary != "" and title != None:
-            knowledge_base[title] = {
-                'link': starter_url,
-                'summary': summarize(" ".join(summary[:15]))
-            }
+            summary = summarize(" ".join(summary[:15]))
+            if summary != "":
+                knowledge_base[title] = {
+                    'link': starter_url,
+                    'summary': summary
+                }
+            
     except:
         print("Could not Parse!")
     if depth <= 0: 
@@ -114,8 +121,12 @@ def crawl(starter_url, depth=6, link_limit=3):
     
     #find and visit child urls
     counter = 0
-    
-    alllinks = soup.find_all('a')
+    alllinks = None
+    #if there is a summery, use the links there instead of the whole paage
+    if content_text != None:
+        alllinks = content_text.find_all('a')
+    else: 
+        alllinks = soup.find_all('a')
     print(len(alllinks))
     random.Random(datetime.now()).shuffle(alllinks)
     # find urls
@@ -124,7 +135,7 @@ def crawl(starter_url, depth=6, link_limit=3):
         if href and (href.startswith("http") or not href[0] == "#"):
             
             #normalise URL
-            href = urllib.parse.urljoin(domain, href)
+            href = urllib.parse.urljoin("https://" + domain, href)
             url_parse = urlparse(href)
             cur_domain = url_parse.netloc
             

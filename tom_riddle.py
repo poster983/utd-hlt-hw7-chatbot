@@ -178,6 +178,22 @@ pairs = (
         
     ),
     (
+        r"how does(.*)work",
+        (
+            "[[KNOWLAGE_BASE]]=%1",
+            "[[KNOWLAGE_BASE]]=%1"
+        ),
+        
+    ),
+    (
+        r"how do you use(.*)",
+        (
+            "[[KNOWLAGE_BASE]]=%1",
+            "[[KNOWLAGE_BASE]]=%1"
+        ),
+        
+    ),
+    (
         r"Who is (.*)",
         (
             "[[KNOWLAGE_BASE]]=%1",
