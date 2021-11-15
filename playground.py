@@ -2,6 +2,8 @@ import urllib
 from bs4 import BeautifulSoup
 # print (wikia.page("harrypotter", "Harry_Potter").title)
 import requests
+
+from person import UserBase
 tst = []
 import json
 
@@ -9,7 +11,7 @@ import pickle
 from FuzzySearch import FuzzySearch
 
 
-print(urllib.parse.urljoin("https://harrypotter.fandom.com", "/wiki/Lovegood_House"))
+# print(urllib.parse.urljoin("https://harrypotter.fandom.com", "/wiki/Lovegood_House"))
 
 # data = requests.get("https://harrypotter.fandom.com/wiki/Harry_Potter_and_the_Half-Blood_Prince").text
 # soup = BeautifulSoup(data, features="html.parser")
@@ -52,4 +54,6 @@ print(urllib.parse.urljoin("https://harrypotter.fandom.com", "/wiki/Lovegood_Hou
 # search = FuzzySearch(knowlage_base)
 
 # print(search.find("JK Rowling"))
-
+userbase = UserBase()
+with open("userbase.json", "w") as f:
+    f.write(json.dumps(userbase.dict, indent=1))

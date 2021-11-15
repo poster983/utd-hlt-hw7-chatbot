@@ -1,26 +1,9 @@
-# Natural Language Toolkit: Eliza
-#
-# Copyright (C) 2001-2021 NLTK Project
-# Authors: Steven Bird <stevenbird1@gmail.com>
-#          Edward Loper <edloper@gmail.com>
-# URL: <https://www.nltk.org/>
-# For license information, see LICENSE.TXT
-
-# Based on an Eliza implementation by Joe Strout <joe@strout.net>,
-# Jeff Epler <jepler@inetnebr.com> and Jez Higgins <mailto:jez@jezuk.co.uk>.
-
-# a translation table used to convert things you say into things the
-# computer says back, e.g. "I am" --> "you are"
-
 from chatterbot import ChatBot
 from nltk.chat.util import Chat, reflections
 import pickle
 from FuzzySearch import FuzzySearch
 from person import UserBase
-   # test
-# a table of response pairs, where each pair consists of a
-# regular expression, and a list of possible responses,
-# with group-macros labelled as %1, %2.
+
 
 
 class TomRiddle:
@@ -111,8 +94,8 @@ class TomRiddle:
             # get the user name
             user = self.userBase.get(user_id)
             if user.name != None:
-                if user.house == "Slytherine":
-                    res = "Ofcourse I remember you, you are true believer!"
+                if user.house == "Slytherin":
+                    res = "Of course I remember you, you are better than most!"
                 else:
                     res = "Ohh you are from " + user.house + ", you are not worth my time!"
             else:
@@ -123,7 +106,7 @@ class TomRiddle:
             # get the user name
             user = self.userBase.get(user_id)
             if user.name != None:
-                res = "Your friend's with " + user.characteristic
+                res = "Your friend's with " + user.character
             else:
                 res = "You haven't told me yet... "
 

@@ -3,10 +3,10 @@ import pickle
 from thefuzz import process
 
 class User():
-    def __init__(self, name=None, hobby=None, characteristic=None, house=None, nickname=None):
+    def __init__(self, name=None, hobby=None, character=None, house=None, nickname=None):
         self.name = name
         self.hobby = hobby
-        self.characteristic = characteristic
+        self.character = character
         self._house = None
         self.house = house
         self.nickname = nickname
@@ -42,11 +42,11 @@ class User():
     def getHobby(self):
         return self.hobby
 
-    def setChar(self, characteristic):
-        self.characteristic = characteristic
+    def setChar(self, character):
+        self.character = character
 
     def getChar(self):
-        return self.characteristic
+        return self.character
 
 
 
