@@ -1,10 +1,6 @@
 # utd-hlt-hw7-chatbot
 Tom Riddle Chatbot
 
-## To run
-```shell
-> flask run 
-```
 
 ## To Install
 ```shell 
@@ -43,3 +39,17 @@ spacy==2.1.9
 ```shell 
 > pip3 install -r requirements.txt
 ```
+
+## To run
+```shell
+> flask run 
+```
+Open the Link that was displayed in the terminal.  
+  
+Alternatively, run:
+```shell
+> python3 tom_riddle.py 
+```
+to get a text only version
+
+  
